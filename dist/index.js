@@ -1519,75 +1519,73 @@ function formatDiff(diff) {
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        // try {
-        const resultsetPaths = {
-            base: core.getInput('base-resultset-path'),
-            head: core.getInput('head-resultset-path')
-        };
-        console.log('resultsetPaths', resultsetPaths);
-        // const resultsetPaths = {
-        //   base: 'coverage/.resultset.main.json',
-        //   head: 'coverage/.resultset.json'
-        // }
-        // const paths = {
-        //   base: path.resolve(process.cwd(), resultsetPaths.base),
-        //   head: path.resolve(process.cwd(), resultsetPaths.head)
-        // }
-        // doesPathExists(paths.base)
-        // doesPathExists(paths.head)
-        const resultsets = {
-            base: parseResultset(resultsetPaths.base),
-            head: parseResultset(resultsetPaths.head)
-        };
-        console.log('successfgully parsed');
-        const coverages = {
-            base: new simplecov_1.Coverage(resultsets.base),
-            head: new simplecov_1.Coverage(resultsets.head)
-        };
-        console.log('getCoverageDiff');
-        const diff = simplecov_1.getCoverageDiff(coverages.base, coverages.head);
-        let content;
-        if (diff.length === 0) {
-            content = 'No differences';
-        }
-        else {
-            content = markdown_table_1.default([
-                ['Filename', 'Lines', 'Branches'],
-                ...diff.map(formatDiff)
-            ]);
-        }
-        const message = `<details>
+        try {
+            const resultsetPaths = {
+                base: core.getInput('base-resultset-path'),
+                head: core.getInput('head-resultset-path')
+            };
+            console.log('resultsetPaths', resultsetPaths);
+            // const resultsetPaths = {
+            //   base: 'coverage/.resultset.main.json',
+            //   head: 'coverage/.resultset.json'
+            // }
+            // const paths = {
+            //   base: path.resolve(process.cwd(), resultsetPaths.base),
+            //   head: path.resolve(process.cwd(), resultsetPaths.head)
+            // }
+            // doesPathExists(paths.base)
+            // doesPathExists(paths.head)
+            const resultsets = {
+                base: parseResultset(resultsetPaths.base),
+                head: parseResultset(resultsetPaths.head)
+            };
+            console.log('successfgully parsed');
+            const coverages = {
+                base: new simplecov_1.Coverage(resultsets.base),
+                head: new simplecov_1.Coverage(resultsets.head)
+            };
+            console.log('getCoverageDiff');
+            const diff = simplecov_1.getCoverageDiff(coverages.base, coverages.head);
+            let content;
+            if (diff.length === 0) {
+                content = 'No differences';
+            }
+            else {
+                content = markdown_table_1.default([
+                    ['Filename', 'Lines', 'Branches'],
+                    ...diff.map(formatDiff)
+                ]);
+            }
+            const message = `<details>
 <summary>Coverage difference</summary>
 
 ${content}
 </details>
 `;
-        console.log('message', message);
-        return;
-        /**
-         * Publish a comment in the PR with the diff result.
-         */
-        const octokit = github.getOctokit(core.getInput('token'));
-        const pullRequestId = github.context.issue.number;
-        if (!pullRequestId) {
-            core.warning('Cannot find the PR id.');
-            core.info(message);
-            return;
+            /**
+             * Publish a comment in the PR with the diff result.
+             */
+            const octokit = github.getOctokit(core.getInput('token'));
+            const pullRequestId = github.context.issue.number;
+            if (!pullRequestId) {
+                core.warning('Cannot find the PR id.');
+                core.info(message);
+                return;
+            }
+            yield octokit.issues.createComment({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo,
+                issue_number: pullRequestId,
+                body: message
+            });
         }
-        yield octokit.issues.createComment({
-            owner: github.context.repo.owner,
-            repo: github.context.repo.repo,
-            issue_number: pullRequestId,
-            body: message
-        });
-        // } catch (error) {
-        // core.setFailed(error.message)
-        // }
+        catch (error) {
+            console.log(error);
+            core.setFailed(error.message);
+        }
     });
 }
-console.log('toh');
 run();
-// parseResultset('coverage/.resultset.json')
 
 
 /***/ }),
@@ -9625,9 +9623,7 @@ function branchesCoverages(coverage) {
 }
 class Coverage {
     constructor(resultset) {
-        console.log('constructor Coverage');
         const coverages = resultset['Minitest']['coverage'];
-        console.log('resultset keys', Object.keys(coverages));
         this.files = [];
         for (const filename of Object.keys(coverages)) {
             const coverage = coverages[filename];
@@ -9650,9 +9646,7 @@ exports.Coverage = Coverage;
 function getCoverageDiff(cov1, cov2) {
     const diff = [];
     const cov1Files = cov1.filesMap();
-    console.log('cov1Files');
     const cov2Files = cov2.filesMap();
-    console.log('cov2Files');
     for (const filename of mergeFilenames(cov1, cov2)) {
         const fcov1 = cov1Files.get(filename);
         const fcov2 = cov2Files.get(filename);
@@ -9660,7 +9654,6 @@ function getCoverageDiff(cov1, cov2) {
             diff.push(makeDiff(fcov1, fcov2));
         }
     }
-    console.log('diff', diff);
     return diff;
 }
 exports.getCoverageDiff = getCoverageDiff;

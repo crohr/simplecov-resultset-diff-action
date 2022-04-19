@@ -69,9 +69,7 @@ export class Coverage {
   files: FileCoverage[]
 
   constructor(resultset: ResultSet) {
-    console.log('constructor Coverage')
     const coverages = resultset['Minitest']['coverage']
-    console.log('resultset keys', Object.keys(coverages))
     this.files = []
     for (const filename of Object.keys(coverages)) {
       const coverage = coverages[filename]
@@ -98,9 +96,7 @@ export function getCoverageDiff(
 ): FileCoverageDiff[] {
   const diff: FileCoverageDiff[] = []
   const cov1Files = cov1.filesMap()
-  console.log('cov1Files')
   const cov2Files = cov2.filesMap()
-  console.log('cov2Files')
   for (const filename of mergeFilenames(cov1, cov2)) {
     const fcov1 = cov1Files.get(filename)
     const fcov2 = cov2Files.get(filename)
@@ -108,7 +104,6 @@ export function getCoverageDiff(
       diff.push(makeDiff(fcov1, fcov2))
     }
   }
-  console.log('diff', diff)
   return diff
 }
 
