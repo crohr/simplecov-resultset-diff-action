@@ -1460,7 +1460,7 @@ const github = __importStar(__webpack_require__(469));
 const core = __importStar(__webpack_require__(470));
 const markdown_table_1 = __importDefault(__webpack_require__(366));
 const simplecov_1 = __webpack_require__(982);
-const WORKSPACE = '/home/crohr/dev/kelindi/malo'; // process.env.GITHUB_WORKSPACE!
+const WORKSPACE = process.env.GITHUB_WORKSPACE;
 function doesPathExists(filepath) {
     if (!fs.existsSync(filepath)) {
         throw new Error(`${filepath} does not exist!`);
@@ -9625,7 +9625,9 @@ function branchesCoverages(coverage) {
 }
 class Coverage {
     constructor(resultset) {
+        console.log('constructor Coverage');
         const coverages = resultset['Minitest']['coverage'];
+        console.log('resultset keys', Object.keys(coverages));
         this.files = [];
         for (const filename of Object.keys(coverages)) {
             const coverage = coverages[filename];
