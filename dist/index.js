@@ -1460,14 +1460,16 @@ const github = __importStar(__webpack_require__(469));
 const core = __importStar(__webpack_require__(470));
 const markdown_table_1 = __importDefault(__webpack_require__(366));
 const simplecov_1 = __webpack_require__(982);
-const WORKSPACE = process.env.GITHUB_WORKSPACE;
+const WORKSPACE = '/home/crohr/dev/kelindi/malo'; // process.env.GITHUB_WORKSPACE!
 function doesPathExists(filepath) {
     if (!fs.existsSync(filepath)) {
         throw new Error(`${filepath} does not exist!`);
     }
 }
 function parseResultset(resultsetPath) {
+    console.log('parsing', resultsetPath);
     const content = fs.readFileSync(path.resolve(WORKSPACE, resultsetPath));
+    console.log('content', content);
     return JSON.parse(content.toString());
 }
 function truncPercentage(n) {
@@ -1522,16 +1524,22 @@ function run() {
                 base: core.getInput('base-resultset-path'),
                 head: core.getInput('head-resultset-path')
             };
-            const paths = {
-                base: path.resolve(process.cwd(), resultsetPaths.base),
-                head: path.resolve(process.cwd(), resultsetPaths.head)
-            };
-            doesPathExists(paths.base);
-            doesPathExists(paths.head);
+            console.log('resultsetPaths', resultsetPaths);
+            // const resultsetPaths = {
+            //   base: 'coverage/.resultset.main.json',
+            //   head: 'coverage/.resultset.json'
+            // }
+            // const paths = {
+            //   base: path.resolve(process.cwd(), resultsetPaths.base),
+            //   head: path.resolve(process.cwd(), resultsetPaths.head)
+            // }
+            // doesPathExists(paths.base)
+            // doesPathExists(paths.head)
             const resultsets = {
-                base: parseResultset(paths.base),
-                head: parseResultset(paths.head)
+                base: parseResultset(resultsetPaths.base),
+                head: parseResultset(resultsetPaths.head)
             };
+            console.log('successfgully parsed');
             const coverages = {
                 base: new simplecov_1.Coverage(resultsets.base),
                 head: new simplecov_1.Coverage(resultsets.head)
@@ -1553,6 +1561,8 @@ function run() {
 ${content}
 </details>
 `;
+            console.log('message', message);
+            return;
             /**
              * Publish a comment in the PR with the diff result.
              */
@@ -1575,7 +1585,9 @@ ${content}
         }
     });
 }
+console.log('toh');
 run();
+// parseResultset('coverage/.resultset.json')
 
 
 /***/ }),

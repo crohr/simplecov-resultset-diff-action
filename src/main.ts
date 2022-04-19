@@ -10,7 +10,7 @@ import {
   FileCoverageDiff
 } from './simplecov'
 
-const WORKSPACE: string = process.env.GITHUB_WORKSPACE!
+const WORKSPACE: string = '/home/crohr/dev/kelindi/malo' // process.env.GITHUB_WORKSPACE!
 
 function doesPathExists(filepath: string): void {
   if (!fs.existsSync(filepath)) {
@@ -19,7 +19,9 @@ function doesPathExists(filepath: string): void {
 }
 
 function parseResultset(resultsetPath: string): ResultSet {
+  console.log('parsing', resultsetPath)
   const content = fs.readFileSync(path.resolve(WORKSPACE, resultsetPath))
+  console.log('content', content)
   return JSON.parse(content.toString()) as ResultSet
 }
 
@@ -85,19 +87,26 @@ async function run(): Promise<void> {
       head: core.getInput('head-resultset-path')
     }
 
-    const paths = {
-      base: path.resolve(process.cwd(), resultsetPaths.base),
-      head: path.resolve(process.cwd(), resultsetPaths.head)
-    }
+    console.log('resultsetPaths', resultsetPaths)
+    // const resultsetPaths = {
+    //   base: 'coverage/.resultset.main.json',
+    //   head: 'coverage/.resultset.json'
+    // }
 
-    doesPathExists(paths.base)
-    doesPathExists(paths.head)
+    // const paths = {
+    //   base: path.resolve(process.cwd(), resultsetPaths.base),
+    //   head: path.resolve(process.cwd(), resultsetPaths.head)
+    // }
+
+    // doesPathExists(paths.base)
+    // doesPathExists(paths.head)
 
     const resultsets = {
-      base: parseResultset(paths.base),
-      head: parseResultset(paths.head)
+      base: parseResultset(resultsetPaths.base),
+      head: parseResultset(resultsetPaths.head)
     }
 
+    console.log('successfgully parsed')
     const coverages = {
       base: new Coverage(resultsets.base),
       head: new Coverage(resultsets.head)
@@ -122,6 +131,9 @@ ${content}
 </details>
 `
 
+    console.log('message', message)
+    return
+
     /**
      * Publish a comment in the PR with the diff result.
      */
@@ -145,4 +157,6 @@ ${content}
   }
 }
 
+console.log('toh')
 run()
+// parseResultset('coverage/.resultset.json')
