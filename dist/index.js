@@ -9633,8 +9633,8 @@ class Coverage {
             const coverage = coverages[filename];
             this.files.push({
                 filename,
-                lines: linesCoverage(coverage.lines),
-                branches: branchesCoverages(coverage.branches)
+                lines: linesCoverage(coverage.lines || []),
+                branches: branchesCoverages(coverage.branches || {})
             });
         }
     }
