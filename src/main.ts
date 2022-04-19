@@ -112,6 +112,7 @@ async function run(): Promise<void> {
       head: new Coverage(resultsets.head)
     }
 
+    console.log('getCoverageDiff')
     const diff = getCoverageDiff(coverages.base, coverages.head)
 
     let content: string

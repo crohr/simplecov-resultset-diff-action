@@ -1544,6 +1544,7 @@ function run() {
                 base: new simplecov_1.Coverage(resultsets.base),
                 head: new simplecov_1.Coverage(resultsets.head)
             };
+            console.log('getCoverageDiff');
             const diff = simplecov_1.getCoverageDiff(coverages.base, coverages.head);
             let content;
             if (diff.length === 0) {
@@ -9650,7 +9651,9 @@ exports.Coverage = Coverage;
 function getCoverageDiff(cov1, cov2) {
     const diff = [];
     const cov1Files = cov1.filesMap();
+    console.log('cov1Files');
     const cov2Files = cov2.filesMap();
+    console.log('cov2Files');
     for (const filename of mergeFilenames(cov1, cov2)) {
         const fcov1 = cov1Files.get(filename);
         const fcov2 = cov2Files.get(filename);
@@ -9658,6 +9661,7 @@ function getCoverageDiff(cov1, cov2) {
             diff.push(makeDiff(fcov1, fcov2));
         }
     }
+    console.log('diff', diff);
     return diff;
 }
 exports.getCoverageDiff = getCoverageDiff;
