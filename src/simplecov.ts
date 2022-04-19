@@ -69,7 +69,9 @@ export class Coverage {
   files: FileCoverage[]
 
   constructor(resultset: ResultSet) {
+    console.log('constructor Coverage')
     const coverages = resultset['Minitest']['coverage']
+    console.log('resultset keys', Object.keys(coverages))
     this.files = []
     for (const filename of Object.keys(coverages)) {
       const coverage = coverages[filename]
