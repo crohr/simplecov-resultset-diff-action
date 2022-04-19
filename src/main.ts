@@ -10,7 +10,7 @@ import {
   FileCoverageDiff
 } from './simplecov'
 
-const WORKSPACE: string = '/home/crohr/dev/kelindi/malo' // process.env.GITHUB_WORKSPACE!
+const WORKSPACE: string = process.env.GITHUB_WORKSPACE!
 
 function doesPathExists(filepath: string): void {
   if (!fs.existsSync(filepath)) {
