@@ -136,18 +136,30 @@ ${content}
      * Publish a comment in the PR with the diff result.
      */
     const octokit = github.getOctokit(core.getInput('token'))
+    const context = github.context
+    const state = 'open'
+    const result = await octokit.rest.repos.listPullRequestsAssociatedWithCommit(
+      {
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        commit_sha: context.sha
+      }
+    )
 
-    const pullRequestId = github.context.issue.number
-    if (!pullRequestId) {
-      core.warning('Cannot find the PR id.')
+    const pr = result.data.filter(
+      (el: {state: string}) => el.state === state
+    )[0]
+
+    if (!pr) {
+      core.warning('Cannot find the PR')
       core.info(message)
       return
     }
 
     await octokit.issues.createComment({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: pullRequestId,
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      issue_number: pr.number,
       body: message
     })
   } catch (error) {
