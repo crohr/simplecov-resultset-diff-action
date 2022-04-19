@@ -9613,7 +9613,7 @@ function branchesCoverages(coverage) {
 }
 class Coverage {
     constructor(resultset) {
-        const coverages = resultset['RSpec']['coverage'];
+        const coverages = resultset['Minitest']['coverage'];
         this.files = [];
         for (const filename of Object.keys(coverages)) {
             const coverage = coverages[filename];
